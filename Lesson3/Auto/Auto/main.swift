@@ -22,22 +22,17 @@ struct PassengerCar {
     var action: ActionCargo? // что делать с грузом
     var volumeCargo: Double?  { //количество груза
         didSet {
-            if action == .load
-                {
+            switch action {
+            case .load :
                 let mas = volumeCargo!
                 print(action!,mas,"кг")
                     oldValue == nil ?
                     (volumeCargo = (oldValue ?? 0) + volumeCargo!) :
                         volumeTrunk < volumeCargo! ? print("Lданный авто не вмещает столько груза") :
                         (volumeCargo = oldValue! + volumeCargo!)
-                }
-            
-            if action == .unload
-                {
+            case .unload :
                     oldValue == nil ? print("Груза нет") : oldValue! < volumeCargo! ? print("Недосьаточно груза, имеется", oldValue!) : (volumeCargo = oldValue! - volumeCargo!)
-                }
-            if action == nil
-            {
+            case  nil :
                 print ("Действия с грузом не производятся")
                 volumeCargo = oldValue
             }
