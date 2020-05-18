@@ -13,16 +13,28 @@ struct PassengerCar {
     let yar: Int
     let volumeTrunk: Double
     var engineStatus: StatusEngine
-    var windowStatus: Bool
+    var windowStatus: WindowStatus {
+        willSet {
+            newValue == .open ? print("Окна открываются") : print("Окна закрываются")
+        }
+    }
     var action: ActionCargo?
-    var volumeCargo: Double
+    var volumeCargo: Double?  {
+        didSet {
+            if oldValue == nil{
+            print("Груза нет")
+            volumeCargo = nil
+            }
+            else
+            {
+            let mas = volumeCargo!
+            print(action!,mas,"кг")
+            }
+            
+        }
+    }
     
-    mutating func openWindow(){
-        self .windowStatus = true
-    }
-    mutating func closeWindow(){
-        self .windowStatus = false
-    }
+    
     mutating func startEngine(){
         self .engineStatus == .work ?
             print("Двигатель уже запущен") : (self .engineStatus = .work)
@@ -33,24 +45,17 @@ struct PassengerCar {
     }
 }
 
-enum StatusEngine:String {
-    case work = "Двигатель заведен"
-    case noWork = "Двигатель заглушен"
+enum WindowStatus {
+    case open, close
 }
 
-enum ActionEngine:String {
-    case start = "Завести двигатель"
-    case stop = "Заглушить двигатель"
+enum StatusEngine {
+    case work, noWork
 }
 
-enum WindowStatus:String {
-    case open = "Открыть окна"
-    case close = "Закрыть окна"
-}
-
-enum ActionCargo: String {
-    case load = "Погрузить"
-    case unload = "Пазгрузить"
+enum ActionCargo {
+    case load
+    case unload
 }
 
 enum Brand {
@@ -60,10 +65,13 @@ enum Brand {
     case MercedesBenz
 }
 
-var car1 = PassengerCar(brand: .BMW, yar: 1998, volumeTrunk: 150, engineStatus: .work, windowStatus: false, volumeCargo: 20.0)
+var car1 = PassengerCar(brand: .BMW, yar: 1998, volumeTrunk: 150, engineStatus: .work, windowStatus: .open, volumeCargo: 10)
 
-car1.openWindow()
+print(car1)
 car1.startEngine()
+car1.windowStatus = .close
+car1.action =  .load
+car1.volumeCargo = 10
 print(car1)
 
 
