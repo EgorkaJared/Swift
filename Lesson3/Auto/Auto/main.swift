@@ -9,28 +9,37 @@
 import Foundation
 
 struct PassengerCar {
-    let brand: Brand
-    let yar: Int
-    let volumeTrunk: Double
-    var engineStatus: StatusEngine
-    var windowStatus: WindowStatus {
+    let brand: Brand  // марка
+    let yar: Int     // год
+    let volumeTrunk: Double  //объем багажника
+    var engineStatus: StatusEngine // статус двигателя
+    var windowStatus: WindowStatus { //статус окон
         willSet {
             newValue == .open ? print("Окна открываются") : print("Окна закрываются")
         }
     }
-    var action: ActionCargo?
-    var volumeCargo: Double?  {
+    var action: ActionCargo? // что делать с грузом
+    var volumeCargo: Double?  { //количество груза
         didSet {
-            if oldValue == nil{
-            print("Груза нет")
-            volumeCargo = nil
-            }
-            else
-            {
-            let mas = volumeCargo!
-            print(action!,mas,"кг")
-            }
+            if action == .load
+                {
+                let mas = volumeCargo!
+                print(action!,mas,"кг")
+                    oldValue == nil ?
+                    (volumeCargo = (oldValue ?? 0) + volumeCargo!) :
+                        volumeTrunk < volumeCargo! ? print("Lданный авто не вмещает столько груза") :
+                        (volumeCargo = oldValue! + volumeCargo!)
+                }
             
+            if action == .unload
+                {
+                    oldValue == nil ? print("Груза нет") : oldValue! < volumeCargo! ? print("Недосьаточно груза, имеется", oldValue!) : (volumeCargo = oldValue! - volumeCargo!)
+                }
+            if action == nil
+            {
+                print ("Действия с грузом не производятся")
+                volumeCargo = oldValue
+            }
         }
     }
     
@@ -54,24 +63,21 @@ enum StatusEngine {
 }
 
 enum ActionCargo {
-    case load
-    case unload
+    case load,unload
 }
 
 enum Brand {
-    case Opel
-    case BMW
-    case Lada
-    case MercedesBenz
+    case Opel,BMW,Lada,MercedesBenz
 }
 
-var car1 = PassengerCar(brand: .BMW, yar: 1998, volumeTrunk: 150, engineStatus: .work, windowStatus: .open, volumeCargo: 10)
+var car1 = PassengerCar(brand: .BMW, yar: 1998, volumeTrunk: 150, engineStatus: .noWork, windowStatus: .open, volumeCargo: 60)
 
 print(car1)
 car1.startEngine()
 car1.windowStatus = .close
-car1.action =  .load
+car1.action = .load
 car1.volumeCargo = 10
+print(car1.volumeCargo!)
 print(car1)
 
 
