@@ -8,6 +8,52 @@
 
 import Foundation
 
+struct Truck {
+    let id: Int
+    let brand: Brand  // марка
+    let yar: Int     // год
+    let volumeTrunk: Double  //объем багажника
+    var engineStatus: StatusEngine // статус двигателя
+    var windowStatus: WindowStatus { //статус окон
+        willSet {
+            newValue == .open ? print("Окна открываются") : print("Окна закрываются")
+        }
+    }
+    var action: ActionCargo? // что делать с грузом
+    var volumeCargo: Double?  { //количество груза
+        didSet {
+            if oldValue! < volumeCargo! {
+                action = .load
+                let mas = volumeCargo!
+                print(action!,mas,"кг")
+                    oldValue == nil ?
+                    (volumeCargo = (oldValue ?? 0) + volumeCargo!) :
+                        volumeTrunk < volumeCargo! ? print("Данный авто не вмещает столько груза") :
+                        (volumeCargo = oldValue! + volumeCargo!)
+            }
+            if oldValue! > volumeCargo! {
+                action = .unload
+                    oldValue == nil ? print("Груза нет") : oldValue! < volumeCargo! ? print("Недосьаточно груза, имеется", oldValue!) : (volumeCargo = oldValue! - volumeCargo!)
+            }
+            if oldValue! == volumeCargo! {
+                action = nil
+                print ("Действия с грузом не производятся")
+                volumeCargo = oldValue
+                
+            }
+            }
+        }
+    
+    mutating func startEngine(){ //завести двигатель
+        self .engineStatus == .work ?
+            print("Двигатель уже запущен") : (self .engineStatus = .work)
+    }
+    mutating func stopEngine(){
+           self .engineStatus == .noWork ? //заглушить двигатель
+               print("Двигатель уже заглушен") : (self .engineStatus = .noWork)
+    }
+}
+
 struct PassengerCar {
     let id: Int
     let brand: Brand  // марка
@@ -28,7 +74,7 @@ struct PassengerCar {
                 print(action!,mas,"кг")
                     oldValue == nil ?
                     (volumeCargo = (oldValue ?? 0) + volumeCargo!) :
-                        volumeTrunk < volumeCargo! ? print("Lданный авто не вмещает столько груза") :
+                        volumeTrunk < volumeCargo! ? print("Данный авто не вмещает столько груза") :
                         (volumeCargo = oldValue! + volumeCargo!)
             case .unload :
                     oldValue == nil ? print("Груза нет") : oldValue! < volumeCargo! ? print("Недосьаточно груза, имеется", oldValue!) : (volumeCargo = oldValue! - volumeCargo!)
