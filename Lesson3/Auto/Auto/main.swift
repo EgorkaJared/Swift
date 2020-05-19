@@ -113,6 +113,7 @@ enum Brand {
 
 var car1 = PassengerCar(id: 1, brand: .BMW, yar: 1998, volumeTrunk: 150, engineStatus: .noWork, windowStatus: .open)
 var car2 = PassengerCar(id: 2, brand: .Lada, yar: 2008, volumeTrunk: 250, engineStatus: .noWork, windowStatus: .open, action: .load, volumeCargo: 60)
+var truck1 = Truck(id: 3, brand: .Opel, yar: 2010, volumeTrunk: 1000, engineStatus: .noWork, windowStatus: .close, action: .unload, volumeCargo: 1000)
 
 print(car1)
 car1.startEngine()
@@ -125,5 +126,6 @@ car2.action = ActionCargo(rawValue: "Разгрузить")
 print(car2.action as Any)
 car2.volumeCargo = 40
 print(car2)
+
 
 
