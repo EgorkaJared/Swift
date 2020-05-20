@@ -20,7 +20,7 @@ struct Truck {
         }
     }
     var action: ActionCargo? // что делать с грузом
-    var volumeCargo: Double?  { //количество груза
+    var volumeCargo: Double? { //количество груза
         didSet {
             if oldValue! < volumeCargo! {
                 action = .load
@@ -105,6 +105,7 @@ enum StatusEngine {
 enum ActionCargo: String {
     case load = "Погрузить"
     case unload = "Разгрузить"
+    
 }
 
 enum Brand {
@@ -113,7 +114,8 @@ enum Brand {
 
 var car1 = PassengerCar(id: 1, brand: .BMW, yar: 1998, volumeTrunk: 150, engineStatus: .noWork, windowStatus: .open)
 var car2 = PassengerCar(id: 2, brand: .Lada, yar: 2008, volumeTrunk: 250, engineStatus: .noWork, windowStatus: .open, action: .load, volumeCargo: 60)
-var truck1 = Truck(id: 3, brand: .Opel, yar: 2010, volumeTrunk: 1000, engineStatus: .noWork, windowStatus: .close, action: .unload, volumeCargo: 1000)
+var truck1 = Truck(id: 3, brand: .Opel, yar: 2010, volumeTrunk: 1000, engineStatus: .noWork, windowStatus: .close, action: .unload, volumeCargo: 1500)
+
 
 print(car1)
 car1.startEngine()
