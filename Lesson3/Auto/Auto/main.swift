@@ -19,26 +19,23 @@ struct Truck {
             newValue == .open ? print("Окна открываются") : print("Окна закрываются")
         }
     }
-    var action: ActionCargo? // что делать с грузом
-    var volumeCargo: Double? { //количество груза
+    var action: ActionCargo = .notuch // что делать с грузом
+    var volumeCargo: Double = 0  { //количество груза
         didSet {
-            if oldValue! < volumeCargo! {
+            if oldValue < volumeCargo {
                 action = .load
-                let mas = volumeCargo!
-                print(action!,mas,"кг")
-                    oldValue == nil ?
-                    (volumeCargo = (oldValue ?? 0) + volumeCargo!) :
-                        volumeTrunk < volumeCargo! ? print("Данный авто не вмещает столько груза") :
-                        (volumeCargo = oldValue! + volumeCargo!)
+                let mas = volumeCargo
+                print(action,mas,"кг")
+                        volumeTrunk < volumeCargo ? print("Данный авто не вмещает столько груза") :
+                        (volumeCargo = oldValue + volumeCargo)
             }
-            if oldValue! > volumeCargo! {
+            if oldValue > volumeCargo {
                 action = .unload
-                    oldValue == nil ? print("Груза нет") : oldValue! < volumeCargo! ? print("Недосьаточно груза, имеется", oldValue!) : (volumeCargo = oldValue! - volumeCargo!)
+                    oldValue == 0 ? print("Груза нет") : oldValue < volumeCargo ? print("Недосьаточно груза, имеется", oldValue) : (volumeCargo = oldValue - volumeCargo)
             }
-            if oldValue! == volumeCargo! {
-                action = nil
+            if oldValue == volumeCargo {
+                action = .notuch
                 print ("Действия с грузом не производятся")
-                volumeCargo = oldValue
                 
             }
             }
@@ -65,22 +62,21 @@ struct PassengerCar {
             newValue == .open ? print("Окна открываются") : print("Окна закрываются")
         }
     }
-    var action: ActionCargo? // что делать с грузом
-    var volumeCargo: Double?  { //количество груза
+    var action: ActionCargo = .notuch // что делать с грузом
+    var volumeCargo: Double = 0  {//количество груза
         didSet {
             switch action {
             case .load :
-                let mas = volumeCargo!
-                print(action!,mas,"кг")
-                    oldValue == nil ?
-                    (volumeCargo = (oldValue ?? 0) + volumeCargo!) :
-                        volumeTrunk < volumeCargo! ? print("Данный авто не вмещает столько груза") :
-                        (volumeCargo = oldValue! + volumeCargo!)
+                let mas = volumeCargo
+                print(action,mas,"кг")
+                   volumeTrunk < volumeCargo ? print("Данный авто не вмещает столько груза") :
+                        (volumeCargo = oldValue + volumeCargo)
             case .unload :
-                    oldValue == nil ? print("Груза нет") : oldValue! < volumeCargo! ? print("Недосьаточно груза, имеется", oldValue!) : (volumeCargo = oldValue! - volumeCargo!)
-            case  nil :
+                    oldValue == 0 ? print("Груза нет") : oldValue < volumeCargo ? print("Недосьаточно груза, имеется", oldValue) : (volumeCargo = oldValue - volumeCargo)
+            case  .notuch :
                 print ("Действия с грузом не производятся")
                 volumeCargo = oldValue
+                
             }
         }
     }
@@ -105,6 +101,7 @@ enum StatusEngine {
 enum ActionCargo: String {
     case load = "Погрузить"
     case unload = "Разгрузить"
+    case notuch = "Не переносить"
     
 }
 
@@ -113,8 +110,9 @@ enum Brand {
 }
 
 var car1 = PassengerCar(id: 1, brand: .BMW, yar: 1998, volumeTrunk: 150, engineStatus: .noWork, windowStatus: .open)
-var car2 = PassengerCar(id: 2, brand: .Lada, yar: 2008, volumeTrunk: 250, engineStatus: .noWork, windowStatus: .open, action: .load, volumeCargo: 60)
-var truck1 = Truck(id: 3, brand: .Opel, yar: 2010, volumeTrunk: 1000, engineStatus: .noWork, windowStatus: .close, action: .unload, volumeCargo: 1500)
+var car2 = PassengerCar(id: 2, brand: .Lada, yar: 2008, volumeTrunk: 250, engineStatus: .noWork, windowStatus: .open, volumeCargo: 0)
+var truck1 = Truck(id: 3, brand: .Opel, yar: 2010, volumeTrunk: 1000, engineStatus: .noWork, windowStatus: .close, action: .unload, volumeCargo: 1500)// не смог понять как ограничить значение при создании, volumeCargo должно быть всегда меньше VolumeTrunk
+
 
 
 print(car1)
@@ -124,10 +122,11 @@ car1.action = .load
 car1.volumeCargo = 10
 print(car1.volumeCargo as Any)
 print(car1)
-car2.action = ActionCargo(rawValue: "Разгрузить")
-print(car2.action as Any)
+car2.action = ActionCargo(rawValue: "Разгрузить")!
+print(car2.action.rawValue)
 car2.volumeCargo = 40
-print(car2)
+
+
 
 
 
