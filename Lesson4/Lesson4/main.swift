@@ -109,7 +109,22 @@ class car {
 class sportCar: car {
     let volumeTunk : Double
     var letPetrol : LetPetrol
-    var carClass : RuleCar
+    var carClass : RuleCar {
+    get {
+    switch self.maxSpeed {
+    case 0...200:
+        return .SuperCar
+    case 201...250:
+        return .MusleCar
+    case 251...300:
+        return .RaceCar
+    default:
+        return .HyperCar
+            }
+        }
+    }
+    
+    var maxSpeed : Double
     override func go() {
         switch self.letPetrol {
         case .full:
@@ -124,10 +139,10 @@ class sportCar: car {
             self.letPetrol = .full
         }
     }
-    init(id:(IdString ,Int), brand: OptionBrand, color: String, windowStatus: WindowStatus, engineStatus: EngineStatus, engineHelse: EngineStatus.EngineHalse, volumeTunk: Double, letPetrol: LetPetrol, carClass: RuleCar) {
+    init(id:(IdString ,Int), brand: OptionBrand, color: String, windowStatus: WindowStatus, engineStatus: EngineStatus, engineHelse: EngineStatus.EngineHalse, volumeTunk: Double, letPetrol: LetPetrol, carClass: RuleCar,maxSpeed: Double) {
         self.volumeTunk = volumeTunk
-        self.carClass = carClass
         self.letPetrol = letPetrol
+        self.maxSpeed = maxSpeed
         super.init(id: id, brand: brand, color: color, windowStatus: windowStatus, engineStatus: engineStatus, engineHelse: engineHelse)
         
         if (letPetrol.litter() ?? 0) > volumeTunk {
@@ -146,11 +161,11 @@ class passengerСar: car {
         switch self.powerEngine {
         case 0...100:
             return .lower
-        case 100...150:
+        case 101...150:
             return .low
-        case 150...200:
+        case 151...200:
             return .middle
-        case 200...250:
+        case 201...250:
             return .high
         default:
             return .highest
@@ -172,9 +187,9 @@ class passengerСar: car {
 
     
     
-var sportCar1 = sportCar(id:(.sport,1), brand: .BMW, color: "Black", windowStatus: .close, engineStatus: .noWork, engineHelse: .Good, volumeTunk: 50, letPetrol: .middle(liter: 90), carClass: .SuperCar)
-var sportCar2 = sportCar(id:(.sport,2), brand: .BMW, color: "Black", windowStatus: .close, engineStatus: .noWork, engineHelse: .Good, volumeTunk: 50, letPetrol: .middle(liter: 20), carClass: .SuperCar)
-
+var sportCar1 = sportCar(id:(.sport,1), brand: .BMW, color: "Black", windowStatus: .close, engineStatus: .noWork, engineHelse: .Good, volumeTunk: 50, letPetrol: .middle(liter: 90), carClass: .SuperCar,  maxSpeed: 200)
+var sportCar2 = sportCar(id:(.sport,2), brand: .BMW, color: "Black", windowStatus: .close, engineStatus: .noWork, engineHelse: .Good, volumeTunk: 50, letPetrol: .middle(liter: 20), carClass: .SuperCar, maxSpeed:     250)
+    
 var passengerCar1 = passengerСar(id:(.pasNg,1), brand: .OPEL, color: "White", windowStatus: .close, engineStatus: .work, engineHelse: .Brake, lotPassenger: .two, locationICE: .front, powerEngine: 112, tax: .highest)
 
 passengerCar1.engineHelse = .Brake
@@ -187,5 +202,5 @@ passengerCar1.go()
 
 sportCar1.go()
 sportCar2.go()
-//sportCar1.go()
 
+print(sportCar1.carClass)
