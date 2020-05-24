@@ -192,6 +192,7 @@ var sportCar2 = sportCar(id:(.sport,2), brand: .BMW, color: "Black", windowStatu
     
 var passengerCar1 = passengerСar(id:(.pasNg,1), brand: .OPEL, color: "White", windowStatus: .close, engineStatus: .work, engineHelse: .Brake, lotPassenger: .two, locationICE: .front, powerEngine: 112, tax: .highest)
 
+
 passengerCar1.engineHelse = .Brake
 print(passengerCar1.engineStatus)
 print(sportCar1.brand)
