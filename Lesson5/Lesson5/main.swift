@@ -32,6 +32,10 @@ enum ActionEngine {
     }
 }
 
+enum ClassCar {
+    case superCar, hyperCar, musleCar, raceCar
+}
+
 protocol lotPetrolProtocol{
     var letPetrol: Int {get set}
 }
@@ -72,6 +76,17 @@ class Car: carProtocol {
     }
 }
 
+class sportCar: Car {
+    var powerEngine: Double
+    
+    init(КоличествоБензина: LetPetrol, СостоянеиеДвигателя: ActionEngine.HelthEngine, СтатусЗажигания: ActionEngine, Объем_бака: Double, количество_пассажиров: Int, Мощностьдвигателя: Double) {
+        self.powerEngine = Мощностьдвигателя
+        super.init(КоличествоБензина: КоличествоБензина, СостоянеиеДвигателя: СостоянеиеДвигателя, СтатусЗажигания: СтатусЗажигания, Объем_бака: Объем_бака, количество_пассажиров: количество_пассажиров)
+        
+    }
+    
+}
+
 extension Car {
     func refueling() {
         switch letPetrol {
@@ -92,13 +107,28 @@ extension Car {
     }
 }
 
+extension sportCar {
+    var classCar: ClassCar {
+        get {
+            if powerEngine <= 200 {return .raceCar}
+            if powerEngine > 200 && powerEngine <= 300 {return .musleCar}
+            if powerEngine > 300 && powerEngine <= 400 {return .superCar}
+            return .hyperCar
+            }
+        }
+    }
+
 
 
 
 var car1 = Car(КоличествоБензина: .middle(litr: 0), СостоянеиеДвигателя: .good, СтатусЗажигания: .noWork, Объем_бака: 50, количество_пассажиров: 4)
 
+var sportcar1 = sportCar(КоличествоБензина: .full, СостоянеиеДвигателя: .good, СтатусЗажигания: .work, Объем_бака: 50, количество_пассажиров: 2, Мощностьдвигателя: 250)
+
 car1.openDoor()
 car1.refueling()
+
+print(sportcar1.classCar)
     
     
 
