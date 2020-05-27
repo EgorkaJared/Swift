@@ -109,7 +109,7 @@ extension Car {
     }
 }
     
-extension Car {
+extension trunkCar {
     func openDoor() {
         print("Двери открывются")
     }
@@ -129,9 +129,10 @@ extension sportCar {
 
 
 
-var car1 = Car(КоличествоБензина: .middle(litr: 0), СостоянеиеДвигателя: .good, СтатусЗажигания: .noWork, Объем_бака: 50, количество_пассажиров: 4)
+var car1 = trunkCar(КоличествоБензина: .full, СостоянеиеДвигателя: .good, СтатусЗажигания: .noWork, Объем_бака: 100, количество_пассажиров: 2, Грузоподъеиность: 1000)
 
 var sportcar1 = sportCar(КоличествоБензина: .full, СостоянеиеДвигателя: .good, СтатусЗажигания: .work, Объем_бака: 50, количество_пассажиров: 2, Мощностьдвигателя: 250)
+
 
 car1.openDoor()
 car1.refueling()
