@@ -37,7 +37,6 @@ protocol lotPetrolProtocol{
 }
 
 protocol carProtocol{
-    func openDoor()
     func actionEngine()
     var volumeTunk: Double {get set}
     var statusEngine: ActionEngine {get set}
@@ -52,9 +51,6 @@ class Car: carProtocol {
     var statusEngine: ActionEngine
     var volumeTunk: Double
     let lotPassanger : Int
-    func openDoor() {
-        print("Двери открываются")
-    }
     func actionEngine() {
         if self.healthEngine == .brake{print("Двигатель сломан"); self.statusEngine = .noWork}
     }
@@ -78,12 +74,28 @@ class Car: carProtocol {
 
 extension Car {
     func refueling() {
-        print ("Заправлено \(volumeTunk - (letPetrol.litr() ?? 0)) дитров, бак полон")
-        letPetrol = .full
+        switch letPetrol {
+        case .full:
+            print("Бак уже полон, запралено 0 л")
+        case .middle(_):
+            print ("Заправлено \(volumeTunk - (letPetrol.litr() ?? 0)) дитров, бак полон")
+            letPetrol = .full
+        default:
+            print("Бак полностью наполнен \(volumeTunk)")
+        }
+    }
+}
+    
+extension Car {
+    func openDoor() {
+        print("Двери открывются")
     }
 }
 
-var car1 = Car(КоличествоБензина: .middle(litr: 10), СостоянеиеДвигателя: .good, СтатусЗажигания: .noWork, Объем_бака: 50, количество_пассажиров: 4)
+
+
+
+var car1 = Car(КоличествоБензина: .middle(litr: 0), СостоянеиеДвигателя: .good, СтатусЗажигания: .noWork, Объем_бака: 50, количество_пассажиров: 4)
 
 car1.openDoor()
 car1.refueling()
