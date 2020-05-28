@@ -8,5 +8,9 @@
 
 import Foundation
 
-print("Hello, World!")
+class processingQueue {}
+
+class collectionQueue {}
+
+class shipmentQueue {}
 
