@@ -86,8 +86,10 @@ class sportCar: Car {
 }
 
 class trunkCar: Car {
-var tonnage: Double
-    init(КоличествоБензина: LetPetrol, СостоянеиеДвигателя: ActionEngine.HelthEngine, СтатусЗажигания: ActionEngine, Объем_бака: Double, количество_пассажиров: Int, Грузоподъеиность: Double) {
+    var id : Int
+    var tonnage: Double
+    init(КоличествоБензина: LetPetrol, СостоянеиеДвигателя: ActionEngine.HelthEngine, СтатусЗажигания: ActionEngine, Объем_бака: Double, количество_пассажиров: Int, Грузоподъеиность: Double, id: Int) {
+        self.id = id
         self.tonnage = Грузоподъеиность
         super.init(КоличествоБензина: КоличествоБензина, СостоянеиеДвигателя: СостоянеиеДвигателя, СтатусЗажигания: СтатусЗажигания, Объем_бака: Объем_бака, количество_пассажиров: количество_пассажиров)
     
@@ -126,18 +128,50 @@ extension sportCar {
         }
     }
 
+extension sportCar : CustomStringConvertible{
+    var description: String {
+        return "\(classCar) c мощеостью двигателя \(powerEngine)  лс"
+    }
+}
+
+extension trunkCar : Comparable {
+    static func < (one: trunkCar, two: trunkCar) -> Bool {
+        return one.tonnage < two.tonnage
+    }
+    static func <= (one: trunkCar, two: trunkCar) -> Bool {
+           return one.tonnage <= two.tonnage
+       }
+    static func >= (one: trunkCar, two: trunkCar) -> Bool {
+           return one.tonnage >= two.tonnage
+       }
+    static func > (one: trunkCar, two: trunkCar) -> Bool {
+           return one.tonnage > two.tonnage
+       }
+    static func == (one: trunkCar, two: trunkCar) -> Bool {
+           return one.tonnage == two.tonnage
+       }
+    
+    
+}
 
 
 
-var car1 = trunkCar(КоличествоБензина: .full, СостоянеиеДвигателя: .good, СтатусЗажигания: .noWork, Объем_бака: 100, количество_пассажиров: 2, Грузоподъеиность: 1000)
+var car1 = trunkCar(КоличествоБензина: .full, СостоянеиеДвигателя: .good, СтатусЗажигания: .noWork, Объем_бака: 100, количество_пассажиров: 2, Грузоподъеиность: 1000, id: 1)
 
-var sportcar1 = sportCar(КоличествоБензина: .full, СостоянеиеДвигателя: .good, СтатусЗажигания: .work, Объем_бака: 50, количество_пассажиров: 2, Мощностьдвигателя: 250)
+var car2 = trunkCar(КоличествоБензина: .full, СостоянеиеДвигателя: .brake, СтатусЗажигания: .noWork, Объем_бака: 100, количество_пассажиров: 2, Грузоподъеиность: 1500, id: 2)
+
+var sportcar1 = sportCar(КоличествоБензина: .Zero, СостоянеиеДвигателя: .good, СтатусЗажигания: .work, Объем_бака: 50, количество_пассажиров: 2, Мощностьдвигателя: 250)
 
 
 car1.openDoor()
 car1.refueling()
 
+sportcar1.refueling()
+
+car1 > car2 ? print ("Грузоподбемность машины с номером\(car1.id) ,больше") : print ("Грузоподбемность машины с номером\(car2.id) ,больше")
+
 print(sportcar1.classCar)
+print(sportcar1)
     
     
 
