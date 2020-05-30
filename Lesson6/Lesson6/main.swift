@@ -8,7 +8,7 @@
 
 import Foundation
 
-var t: Int = 0
+var t: Int = 1
 
 enum PreoritiOreder: Int {
     case hight = 1
@@ -56,22 +56,27 @@ class collectionQueue {  // очередь на сборку
     
 }
 
-struct newOrder<T> {
-    private var order : [T] = []
-    mutating func pushNewOreder(_ newOrder: T){
+struct newOrder {
+    private var order : [processingQueue] = []
+    mutating func pushNewOreder(_ newOrder: processingQueue){
         order.append(newOrder)
+        order.sort()
+        
     }
-    mutating func popNewOrder() -> T? {
+    mutating func popNewOrder() -> processingQueue? {
         if order.isEmpty == false
         {
         let workOrder = order[0]
-        order.removeFirst()
         return workOrder
         }
         return nil
     }
+    mutating func revoveNewOrede() {
+        if order.isEmpty == false {
+            order.removeFirst()
+        }
+    }
     
-    mutating func sortOrder(mass: [T]) {}
 }
 
 extension processingQueue: Comparable{
@@ -103,13 +108,37 @@ extension processingQueue: Comparable{
 //}
 
 
-var OrderStack = newOrder<processingQueue>()
-OrderStack.pushNewOreder(processingQueue(preoriti: .hight))
-OrderStack.pushNewOreder(processingQueue(preoriti: .low))
+var OrderStack = newOrder()
 
-OrderStack.
+var F1 = processingQueue(preoriti: .middle)
+var F2 = processingQueue(preoriti: .low)
+var F3 = processingQueue(preoriti: .hight)
+var F4 = processingQueue(preoriti: .middle)
+var F5 = processingQueue(preoriti: .middle)
+var F6 = processingQueue(preoriti: .hight)
 
-OrderStack.popNewOrder() != nil ? print(OrderStack.popNewOrder()!.idOreder) : print("заказов нет")
+
+OrderStack.pushNewOreder(F1)
+OrderStack.pushNewOreder(F2)
+OrderStack.pushNewOreder(F3)
+OrderStack.pushNewOreder(F4)
+OrderStack.pushNewOreder(F5)
+OrderStack.pushNewOreder(F6)
+
+func processing () { // функция получения и удаления первого заказа в очереди
+    if OrderStack.popNewOrder() != nil {
+        print("первый заказ в очереди с id = \(OrderStack.popNewOrder()!.idOreder) \(OrderStack.popNewOrder()!.statusProcessing)")
+        OrderStack.revoveNewOrede()
+    }
+    else {print("нет заказов")}
+}
+
+processing()
+processing()
+
+
+
+
 
 
  
