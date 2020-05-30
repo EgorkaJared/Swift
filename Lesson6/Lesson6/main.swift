@@ -10,10 +10,10 @@ import Foundation
 
 var t: Int = 0
 
-enum PreoritiOreder {
-    case hight
-    case middle
-    case low
+enum PreoritiOreder: Int {
+    case hight = 1
+    case middle = 2
+    case low = 3
     }
     
 enum StatusProcess{
@@ -23,7 +23,11 @@ enum StatusProcess{
         
     }
 
-class processingQueue {     //очередб на обработку
+enum NameCollector {
+    case Иван, Олег, Яна, Анатолий, Света
+}
+
+class processingQueue {     //очередь на обработку
     
     var idOreder: Int = t
     var preoriti: PreoritiOreder
@@ -36,36 +40,77 @@ class processingQueue {     //очередб на обработку
     }
         
 }
-struct newOrder {
-    private var order : [processingQueue] = []
-    mutating func pushNewOreder(_ newOrder: processingQueue){
-        order.append(newOrder)
-    }
-    mutating func popNewOrde() -> processingQueue? {
-        return order.removeFirst()
-    }
-}
 
 class collectionQueue {  // очередь на сборку
+    
+    var nameCollector: NameCollector
+    var id: Int
+    var preoriti: PreoritiOreder
+    var status: StatusProcess = .new
+    
+    init(Сборщик: NameCollector, id: Int, Преоритет: PreoritiOreder) {
+        self.nameCollector = Сборщик
+        self.id = id
+        self.preoriti = Преоритет
+    }
+    
 }
 
-class shipmentQueue { // очередь на отправку
+struct newOrder<T> {
+    private var order : [T] = []
+    mutating func pushNewOreder(_ newOrder: T){
+        order.append(newOrder)
+    }
+    mutating func popNewOrder() -> T? {
+        if order.isEmpty == false
+        {
+        let workOrder = order[0]
+        order.removeFirst()
+        return workOrder
+        }
+        return nil
+    }
+    
+    mutating func sortOrder(mass: [T]) {}
+}
+
+extension processingQueue: Comparable{
+    static func < (lhs: processingQueue, rhs: processingQueue) -> Bool{
+        return lhs.preoriti.rawValue < rhs.preoriti.rawValue
+        }
+    
+    static func == (lhs: processingQueue, rhs: processingQueue) -> Bool{
+        return lhs.preoriti.rawValue == rhs.preoriti.rawValue
+        }
+    
+    static func > (lhs: processingQueue, rhs: processingQueue) -> Bool {
+          return lhs.preoriti.rawValue > rhs.preoriti.rawValue
+        }
+    
+    static func >= (lhs: processingQueue, rhs:processingQueue) -> Bool{
+        return lhs.preoriti.rawValue >= rhs.preoriti.rawValue
+        }
+    
+    static func <= (lhs: processingQueue, rhs: processingQueue) -> Bool{
+        return lhs.preoriti.rawValue <= rhs.preoriti.rawValue
+        }
+    
 }
 
 
-var order = processingQueue(preoriti: .hight)
-var order2 = processingQueue(preoriti: .low)
-var order3 = processingQueue(preoriti: .hight)
-var order4 = processingQueue(preoriti: .hight)
+//
+//class shipmentQueue { // очередь на отправку
+//}
 
-print(order.idOreder)
-print(order2.idOreder)
-print(order3.idOreder)
 
-var newOrderStack = newOrder()
+var OrderStack = newOrder<processingQueue>()
+OrderStack.pushNewOreder(processingQueue(preoriti: .hight))
+OrderStack.pushNewOreder(processingQueue(preoriti: .low))
 
-newOrderStack.pushNewOreder(order2)
-newOrderStack.pushNewOreder(order)
-newOrderStack.pushNewOreder(order3)
+OrderStack.
 
-print(newOrderStack.popNewOrde()!)
+OrderStack.popNewOrder() != nil ? print(OrderStack.popNewOrder()!.idOreder) : print("заказов нет")
+
+
+ 
+
