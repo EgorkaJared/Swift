@@ -9,6 +9,7 @@
 import Foundation
 
 var t: Int = 1
+var k: Int = 0
 
 enum Products {
     
@@ -23,6 +24,7 @@ enum PreoritiOreder: Int {
     
 enum StatusProcess{
     case new
+    case prework
     case work
     case done
     case cancel
@@ -33,14 +35,15 @@ enum NameCollector {
     case Иван, Олег, Яна, Анатолий, Света
 }
 
-class processingQueue {     //очередь на обработку
-    
+class processingQueue {
+    var sum: Double
     var idOreder: Int = t 
     var preoriti: PreoritiOreder
     var statusProcessing: StatusProcess = .new
     var structureOrder: [Products]
     
-    init(preoriti: PreoritiOreder, structureOrder:[Products]) {
+    init(sum: Double, preoriti: PreoritiOreder, structureOrder:[Products]) {
+        self.sum = sum
         self.preoriti = preoriti
         self.structureOrder = structureOrder
         t = t + 1
@@ -49,27 +52,31 @@ class processingQueue {     //очередь на обработку
         
 }
 
-class collectionQueue {  // очередь на сборку
-    
-    var nameCollector: NameCollector? = nil
+class collectionQueue: SumOrder  {   // очередь на сборку
+    var nameCollector: NameCollector
+    var sum: Double
     var id: Int
     var status: StatusProcess = .new
     
-    init(id: Int) {
+    init(sum: Double, id: Int, nameCollector: NameCollector) {
         self.id = id
+        self.sum = sum
+        self.nameCollector = nameCollector
     }
     
 }
 
-class shipmentQueue {  // очередь на сборку
+class shipmentQueue: SumOrder {  // очередь на сборку
     
+    var sum: Double
     var nameCollector: NameCollector
     var id: Int
     var status: StatusProcess = .new
     
-    init(Курьер: NameCollector, id: Int) {
+    init(sum: Double, Курьер: NameCollector, id: Int) {
         self.nameCollector = Курьер
         self.id = id
+        self.sum = sum
     }
     
 }
@@ -97,7 +104,7 @@ struct newOrder {
     
 }
 
-struct addOrder<T> {
+struct addOrder<T:SumOrder> {
     private var order : [T] = []
     mutating func pushNewOreder(_ newOrder: T){
         order.append(newOrder)
@@ -106,8 +113,9 @@ struct addOrder<T> {
     mutating func popNewOrder() -> T? {
         if order.isEmpty == false
         {
-        let workOrder = order[0]
-        return workOrder
+            var workOrder = (order.first{$0.status == .new})!
+            workOrder.status = .prework
+            return workOrder
         }
         return nil
     }
@@ -116,7 +124,28 @@ struct addOrder<T> {
             order.removeFirst()
         }
     }
+    mutating func filter(name: NameCollector) {
+         let OrderName = order.filter{$0.nameCollector == name}
+           print(OrderName)
+           
+           }
+    subscript (order: Int ...) -> Double? {
+        var sum = 0.0
+        for index in order where index < self.order.count {
+            sum += self.order[index].sum
+            }
+        return sum
+    }
 }
+
+
+protocol SumOrder {
+    var sum : Double {get set}
+    var nameCollector: NameCollector { get set }
+    var status: StatusProcess { get set }
+}
+
+
 
 extension processingQueue: Comparable{
     static func < (lhs: processingQueue, rhs: processingQueue) -> Bool{
@@ -146,47 +175,102 @@ var NewOrderStack = newOrder()
 var CollectionStack = addOrder<collectionQueue>()
 var ShipmentStack = addOrder<shipmentQueue>()
 
-var F1 = processingQueue(preoriti: .middle, structureOrder: [.bread,.cake,.coffee,.eggs])
-var F2 = processingQueue(preoriti: .low, structureOrder: [.bread,.cake,.coffee,.eggs])
-var F3 = processingQueue(preoriti: .hight, structureOrder: [.bread,.cake,.coffee,.eggs])
-var F4 = processingQueue(preoriti: .middle, structureOrder: [.bread,.cake,.coffee,.eggs])
-var F5 = processingQueue(preoriti: .middle, structureOrder: [.bread,.cake,.coffee,.eggs])
-var F6 = processingQueue(preoriti: .hight, structureOrder: [.bread,.cake,.coffee,.eggs])
+for _ in 0...10 {
+    NewOrderStack.pushNewOreder(processingQueue(sum: 100, preoriti: .low, structureOrder: [.bread,.cake,.coffee,.eggs]))
+    NewOrderStack.pushNewOreder(processingQueue(sum: 100, preoriti: .middle, structureOrder: [.bread,.cake,.coffee,.eggs]))
+    NewOrderStack.pushNewOreder(processingQueue(sum: 100, preoriti: .hight, structureOrder: [.bread,.cake,.coffee,.eggs]))
+}
 
-
-NewOrderStack.pushNewOreder(F1)
-NewOrderStack.pushNewOreder(F2)
-NewOrderStack.pushNewOreder(F3)
-NewOrderStack.pushNewOreder(F4)
-NewOrderStack.pushNewOreder(F5)
-NewOrderStack.pushNewOreder(F6)
 
 func processing () { // функция получения и удаления первого заказа в очереди
-    if NewOrderStack.popNewOrder() != nil {
-        print("первый заказ в очереди с id = \(NewOrderStack.popNewOrder()!.idOreder) состав заказа \((NewOrderStack.popNewOrder()!.structureOrder))")
+    let ActionOrder = NewOrderStack.popNewOrder()
+    
+    if ActionOrder != nil {
+        NewOrderStack.removeNewOrede()
+        print("первый заказ в очереди с id = \(ActionOrder!.idOreder) состав заказа \(ActionOrder!.structureOrder))")
         NewOrderStack.popNewOrder()!.statusProcessing = .work
         print("Идет обработка заказа, для перехода к сборке нажмите Y, для отмены нажмите Q")
         let answer = readLine()
         if answer == "Y" || answer == "y" { // не стал дописывать проверки тк сейчас в этом нет необходимости
-            NewOrderStack.popNewOrder()!.statusProcessing = .done
-            let Z1 = collectionQueue(id: NewOrderStack.popNewOrder()!.idOreder)
-            CollectionStack.pushNewOreder(Z1)
+            ActionOrder!.statusProcessing = .done
+            switch k {
+                case 0 :
+                    let Z1 = collectionQueue(sum:ActionOrder!.sum, id: ActionOrder!.idOreder, nameCollector: .Анатолий)
+                    CollectionStack.pushNewOreder(Z1)
+                    k = k + 1
+                case 1 :
+                    let Z1 = collectionQueue(sum:ActionOrder!.sum, id: ActionOrder!.idOreder, nameCollector: .Иван)
+                    CollectionStack.pushNewOreder(Z1)
+                    k = k + 1
+                case 2 :
+                    let Z1 = collectionQueue(sum:ActionOrder!.sum, id: ActionOrder!.idOreder, nameCollector: .Олег)
+                        CollectionStack.pushNewOreder(Z1)
+                        k = k + 1
+                case 3 :
+                    let Z1 = collectionQueue(sum:ActionOrder!.sum, id: ActionOrder!.idOreder, nameCollector: .Света)
+                        CollectionStack.pushNewOreder(Z1)
+                        k = k + 1
+            default:
+                let Z1 = collectionQueue(sum:ActionOrder!.sum, id: ActionOrder!.idOreder, nameCollector: .Яна)
+                    CollectionStack.pushNewOreder(Z1)
+                    k = 0
+            }
         }
             
         else {NewOrderStack.popNewOrder()!.statusProcessing = .cancel}
      
-        NewOrderStack.removeNewOrede()
+        
           
     }
     else {print("нет заказов")}
 }
 
 processing()
-print(F3.statusProcessing)
-processing()
+print(CollectionStack.popNewOrder()!.nameCollector)
 
-print(CollectionStack.popNewOrder()!.id)
-print(NameCollector.Анатолий)
+processing()
+print(CollectionStack.popNewOrder()!.nameCollector)
+
+processing()
+print(CollectionStack.popNewOrder()!.nameCollector)
+
+processing()
+print(CollectionStack.popNewOrder()!.nameCollector)
+
+processing()
+print(CollectionStack.popNewOrder()!.nameCollector)
+
+processing()
+print(CollectionStack.popNewOrder()!.nameCollector)
+
+processing()
+print(CollectionStack.popNewOrder()!.nameCollector)
+
+processing()
+print(CollectionStack.popNewOrder()!.nameCollector)
+
+processing()
+print(CollectionStack.popNewOrder()!.nameCollector)
+
+processing()
+print(CollectionStack.popNewOrder()!.nameCollector)
+
+processing()
+print(CollectionStack.popNewOrder()!.nameCollector)
+
+processing()
+print(CollectionStack.popNewOrder()!.nameCollector)
+
+processing()
+print(CollectionStack.popNewOrder()!.nameCollector)
+
+
+
+
+print(CollectionStack.filter(name: .Анатолий))
+
+
+
 
 
 
