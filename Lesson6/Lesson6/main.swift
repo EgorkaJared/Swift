@@ -49,7 +49,6 @@ class processingQueue {
         t = t + 1
         
     }
-        
 }
 
 class collectionQueue: SumOrder&IdOrder  {   // очередь на сборку
@@ -63,7 +62,6 @@ class collectionQueue: SumOrder&IdOrder  {   // очередь на сборку
         self.sum = sum
         self.nameCollector = nameCollector
     }
-    
 }
 
 class shipmentQueue: SumOrder&IdOrder {  // очередь на сборку
@@ -78,9 +76,7 @@ class shipmentQueue: SumOrder&IdOrder {  // очередь на сборку
         self.id = id
         self.sum = sum
     }
-    
 }
-
 struct newOrder {
     private var order : [processingQueue] = []
     mutating func pushNewOreder(_ newOrder: processingQueue){
@@ -101,9 +97,7 @@ struct newOrder {
             order.removeFirst()
         }
     }
-    
 }
-
 struct addOrder<T:SumOrder&IdOrder> {
     private var order : [T] = []
     mutating func pushNewOreder(_ newOrder: T){
@@ -135,29 +129,27 @@ struct addOrder<T:SumOrder&IdOrder> {
             }
         return sum
     }
-    subscript (status: StatusProcess ) -> [Int] {
-        let allOrder = order.filter{$0.status == status}
+    subscript (status: NameCollector ) -> [Int] {
+        let allOrder = order.filter{$0.nameCollector == status}
         return allOrder.map{$0.id}
     }
     subscript (idX: Int) -> StatusProcess? {
         get
         {
-            if self.order.first(where: {$0.id == idX}) != nil {
-                return  self.order[idX].status
+            let zakaz = self.order.first(where: {$0.id == idX})
+            if zakaz != nil {
+                return  zakaz?.status
             }
             else {return nil}
         }
         set
         {
             var zakaz = self.order.first(where: {$0.id == idX})
-            zakaz?.status = newValue!
-            
+            if zakaz != nil {
+                zakaz?.status = newValue! }
         }
     }
-    
 }
-
-
 protocol SumOrder {
     var sum : Double {get set}
     var nameCollector: NameCollector { get set }
@@ -190,26 +182,23 @@ extension processingQueue: Comparable{
         }
     
 }
-
-
 var NewOrderStack = newOrder()
 var CollectionStack = addOrder<collectionQueue>()
 var ShipmentStack = addOrder<shipmentQueue>()
 
-for _ in 0...10 {
+for _ in 0...3 {
     NewOrderStack.pushNewOreder(processingQueue(sum: 100, preoriti: .low, structureOrder: [.bread,.cake,.coffee,.eggs]))
     NewOrderStack.pushNewOreder(processingQueue(sum: 100, preoriti: .middle, structureOrder: [.bread,.cake,.coffee,.eggs]))
     NewOrderStack.pushNewOreder(processingQueue(sum: 100, preoriti: .hight, structureOrder: [.bread,.cake,.coffee,.eggs]))
 }
 
-
-func processing () { // функция получения и удаления первого заказа в очереди
+func processing () { // функция подтверждение и передачи заказа сборщику
     let ActionOrder = NewOrderStack.popNewOrder()
     
     if ActionOrder != nil {
         NewOrderStack.removeNewOrede()
         print("первый заказ в очереди с id = \(ActionOrder!.idOreder) состав заказа \(ActionOrder!.structureOrder))")
-        NewOrderStack.popNewOrder()!.statusProcessing = .work
+        ActionOrder!.statusProcessing = .work
         print("Идет обработка заказа, для перехода к сборке нажмите Y, для отмены нажмите Q")
         let answer = readLine()
         if answer == "Y" || answer == "y" { // не стал дописывать проверки тк сейчас в этом нет необходимости
@@ -237,44 +226,43 @@ func processing () { // функция получения и удаления п
                     k = 0
             }
         }
-            
         else {NewOrderStack.popNewOrder()!.statusProcessing = .cancel}
-     
-        
-          
-    }
+         }
     else {print("нет заказов")}
 }
-
-
 func collecting() {//функция сборки
-    
 }
 
-
-
-
 processing()
-print(CollectionStack.popNewOrder()!.id)
-
 processing()
-print(CollectionStack.popNewOrder()!.id)
 processing()
-print(CollectionStack.popNewOrder()!.id)
 processing()
-print(CollectionStack.popNewOrder()!.id)
-
+processing()
+processing()
+processing()
+processing()
+processing()
+processing()
+processing()
+processing()
+processing()
+processing()
+processing()
+processing()
+processing()
+processing()
+processing()
+processing()
+processing()
 
 print(" id заказов \(CollectionStack.filter(name: .Анатолий).map{$0.id}) на сумму \(CollectionStack.filter(name: .Анатолий).map{$0.sum})")
 print("Сумма заказов =",CollectionStack[1,3,5])
 
-
-print(CollectionStack[.done])
-
-print(CollectionStack[3]!)
-CollectionStack[3] = .done
-
-print(CollectionStack[1,2])
+print(CollectionStack[.Анатолий])
+print("статус заказ = \(CollectionStack[60])")
+CollectionStack[60] = .done
+print("статус заказ = \(CollectionStack[60])")
+print(CollectionStack[1,3])
 
 
 
