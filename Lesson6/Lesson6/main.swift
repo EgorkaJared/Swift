@@ -52,7 +52,7 @@ class processingQueue {
         
 }
 
-class collectionQueue: SumOrder  {   // очередь на сборку
+class collectionQueue: SumOrder&IdOrder  {   // очередь на сборку
     var nameCollector: NameCollector
     var sum: Double
     var id: Int
@@ -66,7 +66,7 @@ class collectionQueue: SumOrder  {   // очередь на сборку
     
 }
 
-class shipmentQueue: SumOrder {  // очередь на сборку
+class shipmentQueue: SumOrder&IdOrder {  // очередь на сборку
     
     var sum: Double
     var nameCollector: NameCollector
@@ -104,7 +104,7 @@ struct newOrder {
     
 }
 
-struct addOrder<T:SumOrder> {
+struct addOrder<T:SumOrder&IdOrder> {
     private var order : [T] = []
     mutating func pushNewOreder(_ newOrder: T){
         order.append(newOrder)
@@ -124,18 +124,37 @@ struct addOrder<T:SumOrder> {
             order.removeFirst()
         }
     }
-    mutating func filter(name: NameCollector) {
+    mutating func filter(name: NameCollector) -> [T] {
          let OrderName = order.filter{$0.nameCollector == name}
-           print(OrderName)
-           
-           }
-    subscript (order: Int ...) -> Double? {
+        return OrderName
+            }
+    subscript (order: Int ...) -> Double {
         var sum = 0.0
         for index in order where index < self.order.count {
             sum += self.order[index].sum
             }
         return sum
     }
+    subscript (status: StatusProcess ) -> [Int] {
+        let allOrder = order.filter{$0.status == status}
+        return allOrder.map{$0.id}
+    }
+    subscript (idX: Int) -> StatusProcess? {
+        get
+        {
+            if self.order.first(where: {$0.id == idX}) != nil {
+                return  self.order[idX].status
+            }
+            else {return nil}
+        }
+        set
+        {
+            var zakaz = self.order.first(where: {$0.id == idX})
+            zakaz?.status = newValue!
+            
+        }
+    }
+    
 }
 
 
@@ -145,7 +164,9 @@ protocol SumOrder {
     var status: StatusProcess { get set }
 }
 
-
+protocol IdOrder {
+    var id: Int { get set }
+}
 
 extension processingQueue: Comparable{
     static func < (lhs: processingQueue, rhs: processingQueue) -> Bool{
@@ -225,50 +246,35 @@ func processing () { // функция получения и удаления п
     else {print("нет заказов")}
 }
 
-processing()
-print(CollectionStack.popNewOrder()!.nameCollector)
 
-processing()
-print(CollectionStack.popNewOrder()!.nameCollector)
+func collecting() {//функция сборки
+    
+}
 
-processing()
-print(CollectionStack.popNewOrder()!.nameCollector)
 
-processing()
-print(CollectionStack.popNewOrder()!.nameCollector)
+
 
 processing()
-print(CollectionStack.popNewOrder()!.nameCollector)
+print(CollectionStack.popNewOrder()!.id)
 
 processing()
-print(CollectionStack.popNewOrder()!.nameCollector)
-
+print(CollectionStack.popNewOrder()!.id)
 processing()
-print(CollectionStack.popNewOrder()!.nameCollector)
-
+print(CollectionStack.popNewOrder()!.id)
 processing()
-print(CollectionStack.popNewOrder()!.nameCollector)
-
-processing()
-print(CollectionStack.popNewOrder()!.nameCollector)
-
-processing()
-print(CollectionStack.popNewOrder()!.nameCollector)
-
-processing()
-print(CollectionStack.popNewOrder()!.nameCollector)
-
-processing()
-print(CollectionStack.popNewOrder()!.nameCollector)
-
-processing()
-print(CollectionStack.popNewOrder()!.nameCollector)
+print(CollectionStack.popNewOrder()!.id)
 
 
+print(" id заказов \(CollectionStack.filter(name: .Анатолий).map{$0.id}) на сумму \(CollectionStack.filter(name: .Анатолий).map{$0.sum})")
+print("Сумма заказов =",CollectionStack[1,3,5])
 
 
-print(CollectionStack.filter(name: .Анатолий))
+print(CollectionStack[.done])
 
+print(CollectionStack[3]!)
+CollectionStack[3] = .done
+
+print(CollectionStack[1,2])
 
 
 
