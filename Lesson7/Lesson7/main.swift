@@ -14,15 +14,18 @@ protocol Name {
     
 }
 
-enum Fio {
-    case Иванов, Петров, Мясников, Полякова, Травник
+enum Fio : String {
+    case Ivanov = "Иванов"
+    case Petrov = "Попов"
+    case Myasnikov = "Мясников"
+    case Subbotina = "Субботина"
+    case Papanin = "Папанин"
 }
 enum ZP: Double {
     case hight = 300000
     case middle = 200000
     case low = 100000
 }
-
 
 class Groop : Name {
     var name: Fio
@@ -51,20 +54,28 @@ struct Staff<T:Name> {
     mutating func pushMassive(_ newStaff : T) {
         massive.append(newStaff)
     }
-    
-    subscript (ofFio: Fio) -> ZP.RawValue? {
-        let soloZP = massive.first {$0.name == ofFio}
-        return soloZP?.zp.rawValue
-       }
-    subscript (allZp: [Fio]) -> Double {
-        var sumZp : Double = 0
-        for ind in allZp {
-            for idX in massive {
-                if ind == idX.name {
-                    sumZp = Double(sumZp + idX.zp.rawValue)
-                }
-            }
+    func allName () -> [Fio.RawValue:ZP.RawValue] {
+        var all: [Fio.RawValue:ZP.RawValue] = [:]
+        for indX in self.massive {
+            all[indX.name.rawValue] = indX.zp.rawValue
         }
+        return all
+    }
+    
+    subscript (ofFio: Fio) -> ZP.RawValue {
+        let soloZP = massive.first {$0.name == ofFio}
+        guard soloZP != nil else {return 0}
+        return soloZP!.zp.rawValue
+       }
+    subscript () -> Double {
+        var sumZp : Double = 0
+        guard massive.isEmpty == false  else {
+            print("нет сотрудников")
+            return sumZp
+        }
+        for idX in massive {
+            sumZp = Double(sumZp + idX.zp.rawValue)
+            }
         return sumZp
     }
    
@@ -78,11 +89,29 @@ struct Staff<T:Name> {
 
 var StaffStack = Staff<Groop>()
 
-StaffStack.pushMassive(Groop(name: .Иванов, zp: .hight))
-StaffStack.pushMassive(Groop(name: .Мясников, zp: .low))
-StaffStack.pushMassive(Groop(name: .Полякова, zp: .middle))
+StaffStack.pushMassive(Groop(name: .Ivanov, zp: .hight))
+StaffStack.pushMassive(Groop(name: .Myasnikov, zp: .low))
+//StaffStack.pushMassive(Groop(name: .Полякова, zp: .middle))
 
-print(StaffStack)
+//print(StaffStack)
 
-print(StaffStack[.Иванов]!)
-print(StaffStack[[.Иванов,.Мясников,.Травник]])
+print(StaffStack[.Ivanov])
+
+
+class office  {
+    var sumZarplat: Double = StaffStack[]
+    var allStaff : [Fio.RawValue:ZP.RawValue]  = StaffStack.allName()
+    var allmoneyNakormaney : Double
+    
+    
+    init(allmoney:Double) {
+        self.allmoneyNakormaney = allmoney
+    }
+}
+
+let z = office(allmoney: 1000000)
+print("Сумма зарплат = \(z.sumZarplat)")
+print("Сумма зарплат = \(z.allStaff)")
+
+
+
