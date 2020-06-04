@@ -21,16 +21,29 @@ enum ZP: Int {
 class Groop {
     var vedomost = [Fio: ZP]()
     
-    func solo (ofFio: Fio) -> ZP.RawValue? {
-        return vedomost[ofFio].map { $0.rawValue } ?? 0
-    }
     init(vedeomst:[Fio: ZP]) {
-        self.vedomost = vedeomst
+          self.vedomost = vedeomst
+      }
+    
+    func solo (ofFio: Fio) -> ZP.RawValue? {
+        return vedomost[ofFio].map { $0.rawValue }
     }
     
+    func average() -> Double {
+        var sumSalary: Int = 0
+        for ind in vedomost {
+            sumSalary = sumSalary + ind.value.rawValue
+        }
+        return Double(sumSalary/vedomost.count)
+    }
+}
+
+struct Staff<T> {
+    var massive = [T]
 }
 
 let one = Groop(vedeomst: [.Иванов : .hight
     , .Мясников : .low , .Полякова : .middle])
 
-print (one.solo(ofFio: .Петров)!)
+print (one.solo(ofFio: .Иванов)!)
+print (one.average())
