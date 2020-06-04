@@ -39,7 +39,10 @@ class Groop {
 }
 
 struct Staff<T> {
-    var massive = [T]
+    private var massive: [T] = []
+    func pushMassive(_ : T) -> [T] {
+        <#function body#>
+    }
 }
 
 let one = Groop(vedeomst: [.Иванов : .hight
