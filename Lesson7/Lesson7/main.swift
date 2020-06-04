@@ -16,15 +16,15 @@ protocol Name {
 
 enum Fio : String {
     case Ivanov = "Иванов"
-    case Petrov = "Попов"
+    case Petrov = "Петров"
     case Myasnikov = "Мясников"
     case Subbotina = "Субботина"
     case Papanin = "Папанин"
 }
 enum ZP: Double {
-    case hight = 300000
-    case middle = 200000
-    case low = 100000
+    case hight = 3
+    case middle = 2
+    case low = 1
 }
 
 class Groop : Name {
@@ -91,15 +91,18 @@ var StaffStack = Staff<Groop>()
 
 StaffStack.pushMassive(Groop(name: .Ivanov, zp: .hight))
 StaffStack.pushMassive(Groop(name: .Myasnikov, zp: .low))
-//StaffStack.pushMassive(Groop(name: .Полякова, zp: .middle))
+StaffStack.pushMassive(Groop(name: .Papanin, zp: .middle))
+StaffStack.pushMassive(Groop(name: .Petrov, zp: .middle))
+StaffStack.pushMassive(Groop(name: .Subbotina, zp: .middle))
 
 //print(StaffStack)
 
-print(StaffStack[.Ivanov])
+print(StaffStack.allName())
+print("Общая сумма зарплат = \(StaffStack[])")
 
 enum officeError : Error {
-    case theEmployeeIsNotFound
-    case noMoney
+    case theEmployeeIsNotFound(Name: Fio.RawValue)
+    case noMoney(Neds: Double, Name: Fio.RawValue)
 }
 
 class office  {
@@ -109,17 +112,19 @@ class office  {
     
     func payment (employee: Fio.RawValue ) throws -> Double {
         guard allStaff[employee] != nil else {
-             throw officeError.theEmployeeIsNotFound
+            throw officeError.theEmployeeIsNotFound(Name: employee)
         }
         
-        guard allStaff[employee]! < allmoneyNakormaney else {
-             throw officeError.noMoney
+        guard allStaff[employee]! <= allmoneyNakormaney else {
+            throw officeError.noMoney(Neds: allStaff[employee]! - allmoneyNakormaney, Name: employee)
         }
         
         let ostatok = allmoneyNakormaney - allStaff[employee]!
         allmoneyNakormaney = ostatok
        
-        return (ostatok)
+        print ("зарплата \(employee) выплачена, осталось средств = \(ostatok)")
+        
+        return ostatok
     }
     
     init(allmoney:Double) {
@@ -127,12 +132,42 @@ class office  {
     }
 }
 
-let z = office(allmoney: 10000)
-print("Сумма зарплат = \(z.sumZarplat)")
-print("Сумма зарплат = \(z.allStaff)")
+let z = office(allmoney: 22)
 
-print(try z.payment(employee: "Иванов"))
+do {
+    _ = try z.payment(employee: "Петров") //3
+    //try z.payment(employee: "ПVzcybrjd")
+    _ = try z.payment(employee: "Субботина")
+    _ = try z.payment(employee: "Папанин")
+    _ = try z.payment(employee: "Иванов")
+    _ = try z.payment(employee: "Мясников")
+    
+}
+catch officeError.theEmployeeIsNotFound(let Name) {
+    print("Cотрудника \(Name) нет")
+    }
+catch officeError.noMoney(let Neds, let Name) {
+    print ("Нехватает \(Neds) для сотрудника \(Name)")
+}
+
+do {
+    _ = try z.payment(employee: "Петров")
+    _ = try z.payment(employee: "ПVzcybrjd")
+}
+catch officeError.theEmployeeIsNotFound(let Name) {
+    print("Cотрудника \(Name) нет")
+    }
+catch officeError.noMoney(let Neds, let Name) {
+    print ("Нехватает \(Neds) для сотрудника \(Name)")
+}
+
+    
+print("Сумма зарплат = \(z.sumZarplat)")
+print("Сотрудники их зарплаты = \(z.allStaff)")
+
 print(z.allmoneyNakormaney)
+
+
 
 
 
