@@ -97,21 +97,42 @@ StaffStack.pushMassive(Groop(name: .Myasnikov, zp: .low))
 
 print(StaffStack[.Ivanov])
 
+enum officeError : Error {
+    case theEmployeeIsNotFound
+    case noMoney
+}
 
 class office  {
     var sumZarplat: Double = StaffStack[]
     var allStaff : [Fio.RawValue:ZP.RawValue]  = StaffStack.allName()
     var allmoneyNakormaney : Double
     
+    func payment (employee: Fio.RawValue ) -> (Double?,officeError?) {
+        guard allStaff[employee] != nil else {
+            return (nil, officeError.theEmployeeIsNotFound)
+        }
+        
+        guard allStaff[employee]! < allmoneyNakormaney else {
+            return (nil,officeError.noMoney)
+        }
+        
+        let ostatok = allmoneyNakormaney - allStaff[employee]!
+        allmoneyNakormaney = ostatok
+       
+        return (ostatok,nil)
+    }
     
     init(allmoney:Double) {
         self.allmoneyNakormaney = allmoney
     }
 }
 
-let z = office(allmoney: 1000000)
+let z = office(allmoney: 10000)
 print("Сумма зарплат = \(z.sumZarplat)")
 print("Сумма зарплат = \(z.allStaff)")
+
+print(z.payment(employee: "Иванов"))
+print(z.allmoneyNakormaney)
 
 
 
