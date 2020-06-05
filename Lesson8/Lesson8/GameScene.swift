@@ -10,6 +10,8 @@ import SpriteKit
 import GameplayKit
 
 class GameScene: SKScene {
+         // наша змея
+        var snake: Snake?
         // вызывается при первом запуске сцены
         override func didMove(to view: SKView) {
             // цвет фона сцены
@@ -49,6 +51,11 @@ class GameScene: SKScene {
                     clockwiseButton.lineWidth = 10
                     clockwiseButton.name = "clockwiseButton"
                     self.addChild(clockwiseButton)
+            
+            createApple()
+            
+            snake = Snake(atPoint: CGPoint(x: view.scene!.frame.midX, y: view.scene!.frame.midY))
+            self.addChild(snake!)
 
             }
         // вызывается при нажатии на экран
@@ -59,36 +66,51 @@ class GameScene: SKScene {
             let touchLocation = touch.location(in: self)
             // проверяем, есть ли объект по этим координатам, и если есть, то не наша ли это кнопка
             guard let touchedNode = self.atPoint(touchLocation) as? SKShapeNode,
-            touchedNode.name == "counterClockwiseButton" || touchedNode.name == "clockwiseButton" else {
+                touchedNode.name == "counterClockwiseButton" || touchedNode.name == "clockwiseButton" else {
             return
-            }
+                        }
             // если это наша кнопка, заливаем ее зеленым
             touchedNode.fillColor = .green
-                    }
+            // определяем, какая кнопка нажата, и поворачиваем в нужную сторону
+                if touchedNode.name == "counterClockwiseButton" {
+                    snake!.moveCounterClockwise()
+                } else if touchedNode.name == "clockwiseButton" {
+                    snake!.moveClockwise()
                 }
-            // вызывается при прекращении нажатия на экран
-            override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-            // повторяем все то же самое для действия, когда палец отрывается от экрана
-            for touch in touches {
-                let touchLocation = touch.location(in: self)
-                        
-                guard let touchedNode = self.atPoint(touchLocation) as? SKShapeNode,
-                    touchedNode.name == "counterClockwiseButton" || touchedNode.name == "clockwiseButton" else {
-                                return
-                        }
-             // но делаем цвет снова серым
-                        touchedNode.fillColor = UIColor.gray
-                    }
-            }
+        }
+    }
 
         // вызывается при прекращении нажатия на экран
         override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        }
+            // повторяем все то же самое для действия, когда палец отрывается от экрана
+        for touch in touches {
+            let touchLocation = touch.location(in: self)
+                guard let touchedNode = self.atPoint(touchLocation) as? SKShapeNode,
+            touchedNode.name == "counterClockwiseButton" || touchedNode.name == "clockwiseButton" else {
+        return
+                       }
+            // но делаем цвет снова серым
+            touchedNode.fillColor = UIColor.gray
+                   }
+               }
+
         // вызывается при обрыве нажатия на экран, например, если телефон примет звонок и свернет приложение
         override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
         }
         // вызывается при обработке кадров сцены
         override func update(_ currentTime: TimeInterval) {
+            snake!.move()
         }
+// Создаем яблоко в случайной точке сцены
+    func createApple(){
+// Случайная точка на экране
+        let randX  = CGFloat(arc4random_uniform(UInt32(view!.scene!.frame.maxX-5)) + 1)
+        let randY  = CGFloat(arc4random_uniform(UInt32(view!.scene!.frame.maxY-5)) + 1)
+// Создаем яблоко
+        let apple = Apple(position: CGPoint(x: randX, y: randY))
+// Добавляем яблоко на сцену
+        self.addChild(apple)
     }
+}
+
 
