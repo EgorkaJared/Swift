@@ -52,10 +52,18 @@ class GameScene: SKScene {
                     clockwiseButton.name = "clockwiseButton"
                     self.addChild(clockwiseButton)
             
+            
             createApple()
             
             snake = Snake(atPoint: CGPoint(x: view.scene!.frame.midX, y: view.scene!.frame.midY))
             self.addChild(snake!)
+            
+            self.physicsWorld.contactDelegate = self
+            
+            // устанавливаем категорию взаимодействия с другими объектами
+            self.physicsBody?.categoryBitMask = CollisionCategories.EdgeBody
+            // устанавливаем категории, с которыми будут пересекаться края сцены
+            self.physicsBody?.collisionBitMask = CollisionCategories.Snake | CollisionCategories.SnakeHead
 
             }
         // вызывается при нажатии на экран
@@ -112,5 +120,46 @@ class GameScene: SKScene {
         self.addChild(apple)
     }
 }
+
+extension GameScene: SKPhysicsContactDelegate {
+// Добавляем метод отслеживания начала столкновения
+    func didBegin(_ contact: SKPhysicsContact) {
+// логическая сумма масок соприкоснувшихся объектов
+        let bodyes = contact.bodyA.categoryBitMask | contact.bodyB.categoryBitMask
+// вычитаем из суммы голову змеи, и у нас остается маска второго объекта
+        let collisionObject = bodyes ^ CollisionCategories.SnakeHead
+// проверяем, что это за второй объект
+        switch collisionObject {
+        case CollisionCategories.Apple: // проверяем, что это яблоко
+// яблоко – это один из двух объектов, которые соприкоснулись. Используем тернарный оператор, чтобы вычислить, какой именно
+        let apple = contact.bodyA.node is Apple ? contact.bodyA.node : contact.bodyB.node
+// добавляем к змее еще одну секцию
+        snake?.addBodyPart()
+// удаляем съеденное яблоко со сцены
+        apple?.removeFromParent()
+// создаем новое яблоко
+        createApple()
+        case CollisionCategories.EdgeBody:
+// проверяем, что это стенка экрана
+        break
+        // соприкосновение со стеной будет домашним заданием
+        default:
+        break
+                }
+    }
+}
+
+struct CollisionCategories{
+// Тело змеи
+    static let Snake: UInt32 = 0x1 << 0
+// Голова змеи
+    static let SnakeHead: UInt32 = 0x1 << 1
+// Яблоко
+    static let Apple: UInt32 = 0x1 << 2
+// Край сцены (экрана)
+    static let EdgeBody:   UInt32 = 0x1 << 3
+}
+
+
 
 
