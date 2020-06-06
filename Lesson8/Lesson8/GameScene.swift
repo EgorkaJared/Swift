@@ -55,8 +55,9 @@ class GameScene: SKScene {
             
             createApple()
             
+    
             snake = Snake(atPoint: CGPoint(x: view.scene!.frame.midX, y: view.scene!.frame.midY))
-            self.addChild(snake!)
+                self.addChild(snake!)
             
             self.physicsWorld.contactDelegate = self
             
@@ -107,7 +108,7 @@ class GameScene: SKScene {
         }
         // вызывается при обработке кадров сцены
         override func update(_ currentTime: TimeInterval) {
-            snake!.move()
+            snake?.move()
         }
 // Создаем яблоко в случайной точке сцены
     func createApple(){
@@ -119,7 +120,18 @@ class GameScene: SKScene {
 // Добавляем яблоко на сцену
         self.addChild(apple)
     }
-}
+    func gameOver() {
+        let scene = GameScene(size: view!.bounds.size)
+        let skView = view!
+                skView.showsFPS = true
+                skView.showsNodeCount = true
+                skView.ignoresSiblingOrder = true
+                scene.scaleMode = .aspectFit
+                skView.presentScene(scene)
+       }
+    }
+    
+    
 
 extension GameScene: SKPhysicsContactDelegate {
 // Добавляем метод отслеживания начала столкновения
@@ -139,14 +151,18 @@ extension GameScene: SKPhysicsContactDelegate {
         apple?.removeFromParent()
 // создаем новое яблоко
         createApple()
-        case CollisionCategories.EdgeBody:
-// проверяем, что это стенка экрана
-        break
-        // соприкосновение со стеной будет домашним заданием
+        case CollisionCategories.EdgeBody:// проверяем, что это стенка экрана
+        gameOver()
+        
+        case CollisionCategories.Snake:// проверяем, что это стенка экрана
+        gameOver()
+            
         default:
         break
+            
                 }
     }
+    
 }
 
 struct CollisionCategories{
