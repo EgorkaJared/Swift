@@ -12,6 +12,7 @@ import GameplayKit
 class GameScene: SKScene {
          // наша змея
         var snake: Snake?
+        var score: Int = 0
         // вызывается при первом запуске сцены
         override func didMove(to view: SKView) {
             // цвет фона сцены
@@ -24,7 +25,6 @@ class GameScene: SKScene {
             self.physicsBody?.allowsRotation = false
             // включаем отображение отладочной информации
             view.showsPhysics = true
-            
             // поворот против часовой стрелки
             // создаем ноду(объект)
             let counterClockwiseButton = SKShapeNode()
@@ -54,8 +54,8 @@ class GameScene: SKScene {
             
             
             createApple()
-            
-    
+            scorePrint()
+        
             snake = Snake(atPoint: CGPoint(x: view.scene!.frame.midX, y: view.scene!.frame.midY))
                 self.addChild(snake!)
             
@@ -119,7 +119,22 @@ class GameScene: SKScene {
         let apple = Apple(position: CGPoint(x: randX, y: randY))
 // Добавляем яблоко на сцену
         self.addChild(apple)
+        
     }
+    func scorePrint() {
+        
+    let scoreTable = SKLabelNode()
+    let X  = CGFloat(UInt32(view!.scene!.frame.maxX-60))
+    let Y  = CGFloat(UInt32(view!.scene!.frame.maxY-30))
+    scoreTable.fontColor = UIColor.white
+    scoreTable.position = CGPoint(x: X, y: Y)
+    scoreTable.text = String(score)
+    score = score + 1
+    self.addChild(scoreTable)
+
+    }
+    
+    
     func gameOver() {
         let scene = GameScene(size: view!.bounds.size)
         let skView = view!
@@ -129,10 +144,7 @@ class GameScene: SKScene {
                 scene.scaleMode = .aspectFit
                 skView.presentScene(scene)
        }
-    }
-    
-    
-
+}
 extension GameScene: SKPhysicsContactDelegate {
 // Добавляем метод отслеживания начала столкновения
     func didBegin(_ contact: SKPhysicsContact) {
@@ -151,10 +163,8 @@ extension GameScene: SKPhysicsContactDelegate {
         apple?.removeFromParent()
 // создаем новое яблоко
         createApple()
+        scorePrint()
         case CollisionCategories.EdgeBody:// проверяем, что это стенка экрана
-        gameOver()
-        
-        case CollisionCategories.Snake:// проверяем, что это стенка экрана
         gameOver()
             
         default:
@@ -164,7 +174,6 @@ extension GameScene: SKPhysicsContactDelegate {
     }
     
 }
-
 struct CollisionCategories{
 // Тело змеи
     static let Snake: UInt32 = 0x1 << 0
