@@ -54,7 +54,7 @@ class GameScene: SKScene {
             
             
             createApple()
-            scorePrint()
+//            scorePrint()
         
             snake = Snake(atPoint: CGPoint(x: view.scene!.frame.midX, y: view.scene!.frame.midY))
                 self.addChild(snake!)
@@ -121,18 +121,19 @@ class GameScene: SKScene {
         self.addChild(apple)
         
     }
-    func scorePrint() {
-        
-    let scoreTable = SKLabelNode()
-    let X  = CGFloat(UInt32(view!.scene!.frame.maxX-60))
-    let Y  = CGFloat(UInt32(view!.scene!.frame.maxY-30))
-    scoreTable.fontColor = UIColor.white
-    scoreTable.position = CGPoint(x: X, y: Y)
-    scoreTable.text = String(score)
-    score = score + 1
-    self.addChild(scoreTable)
-
-    }
+//    func scorePrint() {
+//
+//    let scoreTable = SKLabelNode()
+//    let X  = CGFloat(UInt32(view!.scene!.frame.maxX-60))
+//    let Y  = CGFloat(UInt32(view!.scene!.frame.maxY-30))
+//    scoreTable.fontColor = UIColor.white
+//    scoreTable.position = CGPoint(x: X, y: Y)
+//    scoreTable.text = String(score)
+//    scoreTable.color = UIColor.black
+//    score = score + 1
+//    self.addChild(scoreTable)
+//
+//    }
     
     
     func gameOver() {
@@ -162,8 +163,9 @@ extension GameScene: SKPhysicsContactDelegate {
 // удаляем съеденное яблоко со сцены
         apple?.removeFromParent()
 // создаем новое яблоко
+        
         createApple()
-        scorePrint()
+//        scorePrint()
         case CollisionCategories.EdgeBody:// проверяем, что это стенка экрана
         gameOver()
             
