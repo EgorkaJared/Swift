@@ -13,6 +13,7 @@ class GameScene: SKScene {
          // наша змея
         var snake: Snake?
         var score: Int = 0
+        var scoreTable = SKLabelNode(text:"0")
         // вызывается при первом запуске сцены
         override func didMove(to view: SKView) {
             // цвет фона сцены
@@ -54,7 +55,12 @@ class GameScene: SKScene {
             
             
             createApple()
-//            scorePrint()
+            
+            scoreTable.fontColor = UIColor.white
+            scoreTable.position = CGPoint(x: CGFloat(UInt32(view.scene!.frame.maxX-60)), y: CGFloat(UInt32(view.scene!.frame.maxY-30)))
+            
+            self.addChild(scoreTable)
+         
         
             snake = Snake(atPoint: CGPoint(x: view.scene!.frame.midX, y: view.scene!.frame.midY))
                 self.addChild(snake!)
@@ -121,20 +127,13 @@ class GameScene: SKScene {
         self.addChild(apple)
         
     }
-//    func scorePrint() {
-//
-//    let scoreTable = SKLabelNode()
-//    let X  = CGFloat(UInt32(view!.scene!.frame.maxX-60))
-//    let Y  = CGFloat(UInt32(view!.scene!.frame.maxY-30))
-//    scoreTable.fontColor = UIColor.white
-//    scoreTable.position = CGPoint(x: X, y: Y)
-//    scoreTable.text = String(score)
-//    scoreTable.color = UIColor.black
-//    score = score + 1
-//    self.addChild(scoreTable)
-//
-//    }
-    
+    func scorePrint() {
+        
+        score = score + 1
+        scoreTable.text = String(score)
+        
+
+    }
     
     func gameOver() {
         let scene = GameScene(size: view!.bounds.size)
@@ -163,8 +162,8 @@ extension GameScene: SKPhysicsContactDelegate {
 // удаляем съеденное яблоко со сцены
         apple?.removeFromParent()
 // создаем новое яблоко
-        
         createApple()
+        scorePrint()
 //        scorePrint()
         case CollisionCategories.EdgeBody:// проверяем, что это стенка экрана
         gameOver()
