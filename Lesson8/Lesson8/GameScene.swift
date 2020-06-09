@@ -168,6 +168,9 @@ extension GameScene: SKPhysicsContactDelegate {
         case CollisionCategories.EdgeBody:// проверяем, что это стенка экрана
         gameOver()
             
+     case CollisionCategories.Snake:
+        gameOver()
+            
         default:
         break
             
@@ -184,8 +187,6 @@ struct CollisionCategories{
     static let Apple: UInt32 = 0x1 << 2
 // Край сцены (экрана)
     static let EdgeBody:   UInt32 = 0x1 << 3
+    
+    static let SnakeHead2:  UInt32 = 0x1 << 4
 }
-
-
-
-

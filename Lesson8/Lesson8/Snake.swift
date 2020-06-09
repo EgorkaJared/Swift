@@ -25,11 +25,17 @@ class Snake: SKShapeNode {
         body.append(head)
 // и сделаем ее дочерним объектом.
         addChild(head)
+        
+         let head2 = SnakeHead2(atPoint: point)
+        // и добавим в массив
+                body.append(head2)
+        // и сделаем ее дочерним объектом.
+                addChild(head2)
     }
 // метод добавляет еще один сегмент тела
     func addBodyPart(){
 // инстанцируем сегмент
-        let newBodyPart = SnakeBodyPart(atPoint: CGPoint(x: body[0].position.x, y: body[0].position.y))
+        let newBodyPart = SnakeBodyPart(atPoint: CGPoint(x: ((body.last)?.position.x)!, y: ((body.last)?.position.y)!))
 // добавляем его в массив
         body.append(newBodyPart)
 // делаем дочерним объектом

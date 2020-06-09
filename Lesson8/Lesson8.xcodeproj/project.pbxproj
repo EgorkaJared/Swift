@@ -17,6 +17,7 @@
 		7F475D9B248A836000DFB382 /* SnakeBodyPart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F475D9A248A836000DFB382 /* SnakeBodyPart.swift */; };
 		7F475D9D248A83C500DFB382 /* SnakeHead.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F475D9C248A83C500DFB382 /* SnakeHead.swift */; };
 		7F475D9F248A83F500DFB382 /* Snake.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F475D9E248A83F500DFB382 /* Snake.swift */; };
+		7F679756248FCA7A008812BB /* SnakeHead2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F679755248FCA7A008812BB /* SnakeHead2.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,6 +33,7 @@
 		7F475D9A248A836000DFB382 /* SnakeBodyPart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnakeBodyPart.swift; sourceTree = "<group>"; };
 		7F475D9C248A83C500DFB382 /* SnakeHead.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnakeHead.swift; sourceTree = "<group>"; };
 		7F475D9E248A83F500DFB382 /* Snake.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Snake.swift; sourceTree = "<group>"; };
+		7F679755248FCA7A008812BB /* SnakeHead2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnakeHead2.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -70,6 +72,7 @@
 				7F475D98248A81C300DFB382 /* apple.swift */,
 				7F475D9A248A836000DFB382 /* SnakeBodyPart.swift */,
 				7F475D9C248A83C500DFB382 /* SnakeHead.swift */,
+				7F679755248FCA7A008812BB /* SnakeHead2.swift */,
 				7F475D9E248A83F500DFB382 /* Snake.swift */,
 				7F475D812489777E00DFB382 /* Main.storyboard */,
 				7F475D842489778600DFB382 /* Assets.xcassets */,
@@ -151,6 +154,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7F475D9D248A83C500DFB382 /* SnakeHead.swift in Sources */,
+				7F679756248FCA7A008812BB /* SnakeHead2.swift in Sources */,
 				7F475D99248A81C300DFB382 /* apple.swift in Sources */,
 				7F475D7E2489777E00DFB382 /* GameScene.swift in Sources */,
 				7F475D802489777E00DFB382 /* GameViewController.swift in Sources */,
